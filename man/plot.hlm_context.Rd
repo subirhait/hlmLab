@@ -15,6 +15,6 @@
 A ggplot object.
 }
 \description{
-Produces an error-bar plot of within, between, and contextual effects
-with 95\% confidence intervals. Intended as a teaching diagram.
+Produces an error-bar plot of within, between, and contextual effects with
+confidence intervals. Intended as a teaching diagram.
 }

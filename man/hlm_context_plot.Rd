@@ -15,3 +15,16 @@ A ggplot object.
 \description{
 Convenience wrapper to plot contextual effects
 }
+\examples{
+set.seed(1)
+school_id <- rep(seq_len(8), each = 12)
+SES_raw <- rnorm(96)
+SES_mean <- rep(tapply(SES_raw, school_id, mean), each = 12)
+SES_c <- SES_raw - SES_mean
+math_score <- 50 + 2 * SES_c + 3 * SES_mean +
+  rep(rnorm(8, sd = 2), each = 12) + rnorm(96)
+toy <- data.frame(math_score = math_score, SES_c = SES_c,
+                  SES_mean = SES_mean, school_id = school_id)
+m <- lme4::lmer(math_score ~ SES_c + SES_mean + (1 | school_id), data = toy)
+hlm_context_plot(hlm_context(m, "SES_c", "SES_mean"))
+}

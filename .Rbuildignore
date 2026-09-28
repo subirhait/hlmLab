@@ -3,3 +3,7 @@
 ^LICENSE\.md$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+^scripts$
+^\.github$
+^\.Rhistory$
+^hlmLab_ECLSK_outputs$

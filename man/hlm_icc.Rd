@@ -7,27 +7,47 @@
 hlm_icc(model, cluster_size = NULL)
 }
 \arguments{
-\item{model}{A fitted \code{lmerMod} object with at least one random intercept.}
+\item{model}{A fitted \code{lmerMod} object with at least one random
+intercept.}
 
-\item{cluster_size}{Optional scalar giving the average cluster size, used
-to compute the design effect. If \code{NULL}, the design effect is not
-computed.}
+\item{cluster_size}{Optional. A scalar average cluster size used to compute
+the design effect, or the string \code{"auto"} to take cluster sizes from
+the fitted model. If \code{NULL}, no design effect is computed.}
 }
 \value{
 An object of class \code{hlm_icc} with components:
 \item{icc}{Estimated intraclass correlation.}
-\item{deff}{Design effect (if cluster_size supplied).}
+\item{deff}{Design effect based on the supplied or mean cluster size.}
+\item{deff_unequal}{Design effect adjusted for unequal cluster sizes
+(only when \code{cluster_size = "auto"}).}
 \item{re_var}{Random intercept variance.}
 \item{resid_var}{Residual variance.}
+\item{n_clusters}{Number of clusters (when available).}
+\item{mean_cluster_size}{Mean cluster size (when available).}
 }
 \description{
 Computes the intraclass correlation (ICC) and, optionally, a design effect
 from a random-intercept multilevel model fitted with \code{lme4::lmer()}.
 }
-\examples{
-\dontrun{
-library(lme4)
-m <- lmer(math_score ~ SES + (1 | school_id), data = d)
-hlm_icc(m, cluster_size = 25)
+\details{
+The ICC is a model-based share of variance, not a causal statement about
+clusters and not a fixed property of a population. With
+\code{cluster_size = "auto"} the observed cluster sizes are taken from the
+model frame and two design effects are reported: the familiar
+\eqn{1 + (\bar m - 1)ICC} using the mean cluster size, and an unequal-size
+version that replaces \eqn{\bar m} with \eqn{\sum n_j^2 / \sum n_j}. The
+second is the more appropriate teaching approximation when cluster sizes
+vary, and both are approximations rather than substitutes for fitting and
+diagnosing a multilevel model.
 }
+\examples{
+set.seed(3)
+toy <- data.frame(
+  math_score = rnorm(80, 50, 10),
+  SES = rnorm(80),
+  school_id = rep(seq_len(8), each = 10)
+)
+m <- lme4::lmer(math_score ~ SES + (1 | school_id), data = toy)
+hlm_icc(m, cluster_size = 10)
+hlm_icc(m, cluster_size = "auto")
 }

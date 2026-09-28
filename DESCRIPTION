@@ -1,7 +1,7 @@
 Package: hlmLab
 Type: Package
 Title: Hierarchical Linear Modeling with Visualization and Decomposition
-Version: 0.1.0
+Version: 0.2.0
 Authors@R:
     person("Subir", "Hait", email = "haitsubi@msu.edu",
            role = c("aut", "cre"),
@@ -14,8 +14,11 @@ Description: Provides functions for visualization and decomposition in
     effect computation as described in Shrout and Fleiss (1979)
     <doi:10.1037/0033-2909.86.2.420>, and contextual effect decomposition via
     the Mundlak (1978) <doi:10.2307/1913646> specification distinguishing
-    within- and between-cluster components. Supports visualization of random
-    slopes and cross-level interactions following Hofmann and Gavin (1998)
+    within- and between-cluster components, with the uncertainty of the
+    contextual contrast obtained from the full fixed-effect covariance matrix.
+    Teaching displays cover simulated intraclass correlations, partial pooling
+    of cluster means, random-slope heterogeneity, and cross-level interaction
+    with an observed Level-2 moderator, following Hofmann and Gavin (1998)
     <doi:10.1177/014920639802400504> and Hamaker and Muthen (2020)
     <doi:10.1037/met0000239>. Multilevel models are estimated using 'lme4'
     (Bates et al., 2015 <doi:10.18637/jss.v067.i01>). An optional 'Shiny'
@@ -30,6 +33,8 @@ Depends:
 Imports:
     dplyr,
     ggplot2 (>= 3.4.0),
+    grDevices,
+    grid,
     lme4,
     scales,
     stats
@@ -39,6 +44,6 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
-URL: https://github.com/causalfragility-lab/hlmLab
-BugReports: https://github.com/causalfragility-lab/hlmLab/issues
+URL: https://github.com/subirhait/hlmLab
+BugReports: https://github.com/subirhait/hlmLab/issues
+Config/roxygen2/version: 8.0.0

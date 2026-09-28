@@ -2,7 +2,7 @@
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/hlmLab)](https://CRAN.R-project.org/package=hlmLab)
-[![R-CMD-check](https://github.com/causalfragility-lab/hlmLab/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/causalfragility-lab/hlmLab/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/subirhait/hlmLab/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/subirhait/hlmLab/actions/workflows/R-CMD-check.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
@@ -22,7 +22,7 @@ Or install the development version from GitHub:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("causalfragility-lab/hlmLab")
+remotes::install_github("subirhait/hlmLab")
 ```
 
 ---
@@ -37,7 +37,31 @@ remotes::install_github("causalfragility-lab/hlmLab")
 | `hlm_icc_plot()` | Visualizes ICC as a stacked variance-partitioning bar chart |
 | `hlm_context()` | Extracts within-cluster, between-cluster, and contextual effects (Mundlak specification) |
 | `hlm_context_plot()` | Plots within, between, and contextual effects with 95% confidence intervals |
-| `hlm_xint_geom()` | Produces a fan plot of random slopes to illustrate cross-level interactions |
+| `hlm_random_slope_plot()` | Draws cluster-specific fitted lines from a random-slope model, with the average line overlaid |
+| `hlm_cross_level_plot()` | Draws the Level-1 association at selected values of an observed Level-2 moderator |
+| `hlm_icc_demo()` | Simulates clustered data at several target ICC values to show what low, moderate, and high clustering look like |
+| `hlm_shrinkage_plot()` | Compares raw cluster means with multilevel estimates to make partial pooling visible |
+| `hlm_xint_geom()` | Deprecated in 0.2.0; alias for `hlm_random_slope_plot()` |
+
+---
+
+## What changed in 0.2.0
+
+* `hlm_context()` computes the standard error of the contextual contrast from
+  the full fixed-effect covariance matrix,
+  `Var(bB - bW) = Var(bB) + Var(bW) - 2 Cov(bB, bW)`. Under exact group-mean
+  centering in a random-intercept model that covariance is zero by
+  construction, so earlier random-intercept results are unchanged; it is
+  generally nonzero with random slopes, other centering choices, or the raw
+  Mundlak parameterization.
+* `hlm_xint_geom()` is deprecated. A random slope is unexplained slope
+  heterogeneity, not a cross-level interaction, so the display was renamed
+  `hlm_random_slope_plot()` and a separate `hlm_cross_level_plot()` was added
+  for models with an observed Level-2 moderator.
+* Two teaching figures were added: `hlm_icc_demo()` and `hlm_shrinkage_plot()`.
+* Plotting functions no longer call `set.seed()` internally.
+
+See `NEWS.md` for the full list.
 
 ---
 
@@ -143,21 +167,32 @@ plot(ctx)
 
 ---
 
-### 4. Cross-Level Interaction Geometry (Random Slopes Fan Plot)
+### 4. Random-Slope Heterogeneity
 
-`hlm_xint_geom()` visualizes how a random slope varies across clusters, producing a fan plot where each line represents one cluster's predicted regression of the outcome on the Level-1 predictor. Spread in the fan indicates slope heterogeneity; a cross-level interaction moderates this spread.
+`hlm_random_slope_plot()` visualizes how a Level-1 association varies across clusters: each line is one cluster's predicted regression of the outcome on the Level-1 predictor, and the orange line is the average. Spread across the lines is unexplained slope heterogeneity. It is not a cross-level interaction, which requires an observed Level-2 moderator; use `hlm_cross_level_plot()` for that case.
 
 ```r
 m2 <- lmer(math_score ~ SES_c + SES_mean + (SES_c | school_id),
            data = mydata)
 
-hlm_xint_geom(m2,
-              x_within   = "SES_c",
-              cluster    = "school_id",
-              n_clusters = 20)
+hlm_random_slope_plot(m2,
+                      x_within   = "SES_c",
+                      cluster    = "school_id",
+                      n_clusters = 20)
 ```
 
-Use `n_clusters` to limit the number of lines displayed when you have many groups.
+Use `n_clusters` to limit the number of lines displayed when you have many groups, and `select` to choose whether those clusters are spread across the slope distribution (the default) or sampled at random.
+
+---
+
+### 5. Partial Pooling and the Meaning of the ICC
+
+```r
+m0 <- lmer(math_score ~ 1 + (1 | school_id), data = mydata)
+
+hlm_shrinkage_plot(m0)                       # raw means vs. multilevel estimates
+hlm_icc_demo(icc = c(0.05, 0.25, 0.60))      # what low, moderate, high ICC look like
+```
 
 ---
 
@@ -186,14 +221,14 @@ citation("hlmLab")
 ```
 Hait S (2026). hlmLab: Hierarchical Linear Modeling with Visualization
 and Decomposition. R package version 0.1.0.
-https://github.com/causalfragility-lab/hlmLab
+https://github.com/subirhait/hlmLab
 ```
 
 ---
 
 ## Contributing
 
-Bug reports and feature requests are welcome at the [issue tracker](https://github.com/causalfragility-lab/hlmLab/issues). Please include a minimal reproducible example with any bug report.
+Bug reports and feature requests are welcome at the [issue tracker](https://github.com/subirhait/hlmLab/issues). Please include a minimal reproducible example with any bug report.
 
 ---
 

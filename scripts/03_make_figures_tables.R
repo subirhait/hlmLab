@@ -154,18 +154,18 @@ ggsave("figures/fig3_contextual_effects.png", fig3,
 cat("Figure 3 saved: figures/fig3_contextual_effects.png\n")
 
 # =============================================================================
-# FIGURE 4 -- Random slopes fan plot
+# FIGURE 4 -- Random-slope heterogeneity
 # =============================================================================
-fig4 <- hlm_xint_geom(
+fig4 <- hlm_random_slope_plot(
   model      = m2,
   x_within   = "SES_c",
   cluster    = "schid",
   n_clusters = 20,
-  n_points   = 30
+  n_points   = 40
 ) +
   labs(
-    title    = "Figure 4. Cross-level interaction geometry: random slopes",
-    subtitle = "20 randomly sampled schools. Each line = one school's predicted SES slope.",
+    title    = "Figure 4. The within-school SES association varies across schools",
+    subtitle = "20 schools spread across the slope distribution. Each line = one school's predicted SES slope.",
     x        = "Within-school SES (SES_c, standardized)",
     y        = "Predicted mathematics achievement (IRT score)"
   ) +

@@ -4,13 +4,17 @@
 \alias{hlm_icc_plot}
 \title{Teaching plot for intraclass correlation (ICC)}
 \usage{
-hlm_icc_plot(model, cluster_size = NULL)
+hlm_icc_plot(model, cluster_size = NULL, labels = TRUE)
 }
 \arguments{
 \item{model}{A fitted \code{lmerMod} model with a random intercept.}
 
-\item{cluster_size}{Optional scalar giving the average cluster size,
-passed to \code{hlm_icc()} to compute the design effect.}
+\item{cluster_size}{Optional scalar giving the average cluster size, or
+\code{"auto"} to take cluster sizes from the fitted model; passed to
+\code{\link{hlm_icc}} to compute the design effect.}
+
+\item{labels}{Logical; print the component labels and percentages inside the
+bar. Defaults to \code{TRUE}.}
 }
 \value{
 A \code{ggplot} object.
@@ -20,4 +24,16 @@ Visualizes the intraclass correlation by plotting the between- and
 within-cluster variance components as a stacked bar. This is intended
 as a teaching diagram to help students see how the ICC reflects the
 share of variance that lies between clusters.
+}
+\examples{
+set.seed(3)
+toy <- data.frame(
+  math_score = rnorm(80, 50, 10),
+  school_id = rep(seq_len(8), each = 10)
+)
+m0 <- lme4::lmer(math_score ~ 1 + (1 | school_id), data = toy)
+hlm_icc_plot(m0, cluster_size = "auto")
+}
+\seealso{
+\code{\link{hlm_icc}}, \code{\link{hlm_icc_demo}}
 }

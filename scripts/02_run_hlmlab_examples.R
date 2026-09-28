@@ -138,13 +138,13 @@ m2 <- lmer(
 cat("Random slope model summary:\n")
 print(VarCorr(m2))
 
-# Figure 4 -- Fan plot (the figure embedded in the paper)
-fig4 <- hlm_xint_geom(
+# Figure 4 -- Random-slope heterogeneity (the figure embedded in the paper)
+fig4 <- hlm_random_slope_plot(
   model      = m2,
   x_within   = "SES_c",
   cluster    = "schid",
   n_clusters = 20,
-  n_points   = 20
+  n_points   = 40
 )
 print(fig4)
 

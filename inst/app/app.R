@@ -388,11 +388,11 @@ server <- function(input, output, session) {
     x  <- paste0(input$x_l1, "_c")
     cl <- input$cluster
 
-    hlm_xint_geom(
+    hlm_random_slope_plot(
       model      = m_rs(),
       x_within   = x,
       cluster    = cl,
-      n_points   = 20,
+      n_points   = 40,
       n_clusters = 30
     )
   })

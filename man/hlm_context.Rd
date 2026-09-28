@@ -4,7 +4,7 @@
 \alias{hlm_context}
 \title{Contextual effect for a Level-1 predictor (Mundlak decomposition)}
 \usage{
-hlm_context(model, x_within, x_between)
+hlm_context(model, x_within, x_between, level = 0.95, check_centering = TRUE)
 }
 \arguments{
 \item{model}{A fitted \code{lmerMod} model.}
@@ -12,24 +12,68 @@ hlm_context(model, x_within, x_between)
 \item{x_within}{Name of the within-cluster centered predictor (string).}
 
 \item{x_between}{Name of the cluster-mean predictor (string).}
+
+\item{level}{Confidence level for the reported intervals. Defaults to 0.95.}
+
+\item{check_centering}{Logical; if \code{TRUE} (the default), warn when
+\code{x_within} does not appear to be group-mean centered, because the
+difference between the two coefficients is then not the contextual effect.}
 }
 \value{
 An object of class \code{hlm_context}, which is a tibble with:
 \item{effect_type}{Within, between, or contextual.}
 \item{estimate}{Estimate of the effect.}
-\item{se}{Standard error (approximate for contextual).}
+\item{se}{Standard error; exact for the contextual contrast.}
+\item{conf_low}{Lower confidence limit.}
+\item{conf_high}{Upper confidence limit.}
+The covariance of the two coefficients is stored in the attribute
+\code{"cov_within_between"} and the confidence level in \code{"level"}.
 }
 \description{
-Given a multilevel model with a within-cluster centered predictor and
-its cluster-mean counterpart (Mundlak specification), this function
-extracts the within- and between-cluster effects and computes the
-contextual effect (between - within).
+Given a multilevel model containing a within-cluster centered predictor and
+its cluster-mean counterpart (Mundlak specification), this function extracts
+the within- and between-cluster effects and computes the contextual effect
+(between minus within) together with its standard error and a confidence
+interval.
+}
+\details{
+The contextual effect is a linear contrast of two fixed-effect coefficients,
+so its sampling variance is
+\deqn{Var(\beta_B - \beta_W) = Var(\beta_B) + Var(\beta_W) -
+  2 Cov(\beta_B, \beta_W).}
+Since version 0.2.0 the covariance term is taken from the fixed-effect
+covariance matrix returned by \code{stats::vcov()} rather than assumed to be
+zero. In a random-intercept model with an exactly group-mean centered
+\code{x_within}, that covariance is zero by construction, so results are
+unchanged; it is generally nonzero when the model contains a random slope,
+when \code{x_within} is centered in some other way, or when the Mundlak
+specification uses the raw (uncentered) predictor.
+
+Intervals use a normal approximation, which is the usual convention for
+\code{lme4} fixed effects because no denominator degrees of freedom are
+supplied.
 }
 \examples{
-\dontrun{
-m <- lme4::lmer(math_score ~ SES_c + SES_mean + (1 | school_id), data = d)
+# Build a small toy dataset (no external data needed)
+set.seed(1)
+n_schools <- 8
+n_students <- 12
+school_id <- rep(seq_len(n_schools), each = n_students)
+SES_raw <- rnorm(n_schools * n_students)
+SES_mean <- rep(tapply(SES_raw, school_id, mean), each = n_students)
+SES_c <- SES_raw - SES_mean
+math_score <- 50 + 2 * SES_c + 3 * SES_mean +
+  rep(rnorm(n_schools, sd = 2), each = n_students) +
+  rnorm(n_schools * n_students)
+toy <- data.frame(math_score = math_score, SES_c = SES_c,
+                  SES_mean = SES_mean, school_id = school_id)
+
+m <- lme4::lmer(math_score ~ SES_c + SES_mean + (1 | school_id), data = toy)
 ctx <- hlm_context(m, x_within = "SES_c", x_between = "SES_mean")
 ctx
 hlm_context_plot(ctx)
 }
+\references{
+Mundlak, Y. (1978). On the pooling of time series and cross section data.
+\emph{Econometrica}, 46, 69-85. \doi{10.2307/1913646}
 }
