@@ -196,6 +196,15 @@ hlm_icc_demo(icc = c(0.05, 0.25, 0.60))      # what low, moderate, high ICC look
 
 ---
 
+## Interactive Shiny application
+
+A companion teaching application is included with the package.
+It provides interactive two-level and three-level longitudinal demonstrations.
+
+```r
+shiny::runApp(system.file("app", package = "hlmLab"))
+```
+
 ## Theoretical Background
 
 hlmLab implements methods from the following foundational references:
@@ -220,8 +229,8 @@ citation("hlmLab")
 
 ```
 Hait S (2026). hlmLab: Hierarchical Linear Modeling with Visualization
-and Decomposition. R package version 0.1.0.
-https://github.com/subirhait/hlmLab
+and Decomposition. R package version 0.2.0.
+https://doi.org/10.32614/CRAN.package.hlmLab | Source: https://github.com/subirhait/hlmLab
 ```
 
 ---

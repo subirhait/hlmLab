@@ -1,7 +1,7 @@
 Package: hlmLab
 Type: Package
 Title: Hierarchical Linear Modeling with Visualization and Decomposition
-Version: 0.2.0
+Version: 0.2.0.9000
 Authors@R:
     person("Subir", "Hait", email = "haitsubi@msu.edu",
            role = c("aut", "cre"),
