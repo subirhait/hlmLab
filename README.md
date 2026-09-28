@@ -198,12 +198,31 @@ hlm_icc_demo(icc = c(0.05, 0.25, 0.60))      # what low, moderate, high ICC look
 
 ## Interactive Shiny application
 
-A companion teaching application is included with the package.
-It provides interactive two-level and three-level longitudinal demonstrations.
+[![Launch the hlmLab Shiny app](https://img.shields.io/badge/Launch-live%20Shiny%20app-2C7FB8?logo=posit&logoColor=white)](https://subirhait.shinyapps.io/hlmlab/)
+
+A companion teaching application provides an interactive, decomposition-first introduction to hierarchical linear modeling.
+
+**Launch the application:** https://subirhait.shinyapps.io/hlmlab/
+
+The application includes:
+
+- simulated two-level data with students nested within schools;
+- simulated three-level longitudinal data with repeated observations nested within children and schools;
+- two-level and between-cluster, between-person, and within-person variance decomposition;
+- ICC estimation and design-effect visualization;
+- partial pooling and shrinkage of cluster means;
+- within-cluster, between-cluster, and contextual-effect decomposition;
+- random-slope heterogeneity and observed cross-level interaction displays;
+- longitudinal trajectory visualization; and
+- analysis of user-uploaded long-format CSV data.
+
+To run the application locally from the installed package:
 
 ```r
 shiny::runApp(system.file("app", package = "hlmLab"))
 ```
+
+The application source is available in [`inst/app`](https://github.com/subirhait/hlmLab/tree/main/inst/app).
 
 ## Theoretical Background
 
